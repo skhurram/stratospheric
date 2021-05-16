@@ -4,7 +4,7 @@ import dev.stratospheric.cdk.ApplicationEnvironment;
 import software.amazon.awscdk.core.App;
 import software.amazon.awscdk.core.Environment;
 
-public class ActiveMqApp {
+public class DynamoDbApp {
 
   public static void main(final String[] args) {
     App app = new App();
@@ -21,8 +21,8 @@ public class ActiveMqApp {
     String region = (String) app.getNode().tryGetContext("region");
     Validations.requireNonEmpty(region, "context variable 'region' must not be null");
 
-    String username = (String) app.getNode().tryGetContext("username");
-    Validations.requireNonEmpty(username, "context variable 'username' must not be null");
+    String tableName = (String) app.getNode().tryGetContext("tableName");
+    Validations.requireNonEmpty(tableName, "context variable 'tableName' must not be null");
 
     Environment awsEnvironment = makeEnv(accountId, region);
 
@@ -31,7 +31,13 @@ public class ActiveMqApp {
       environmentName
     );
 
-    new ActiveMqStack(app, "activeMq", awsEnvironment, applicationEnvironment, username);
+    new DynamoDbStack(
+      app,
+      "dynamoDb",
+      awsEnvironment,
+      applicationEnvironment,
+      tableName
+    );
 
     app.synth();
   }
